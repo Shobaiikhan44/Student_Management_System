@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}  <!-- Load static tag library -->
+
+{% block content %}
+  <h1 class="text-center mt-3">Search Student</h1>
+  <form method="get" class="form-inline justify-content-center mt-3">
+    <input type="text" name="query" placeholder="Search by name or email" class="form-control mr-2">
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+  <ul class="list-group mt-3">
+    {% for student in students %}
+      <li class="list-group-item">
+        <!-- Display Profile Image -->
+        {% if student.image %}
+          <div class="text-center mb-3">
+            <img src="{{ student.image.url }}" alt="{{ student.first_name }} {{ student.last_name }}'s Profile" class="img-fluid rounded-circle" width="150">
+          </div>
+        {% else %}
+          <div class="text-center mb-3">
+            <img src="{% static 'default-profile.png' %}" alt="Default Profile" class="img-fluid rounded-circle" width="150">
+          </div>
+        {% endif %}
+
+        <!-- Student Information -->
+        <h3>{{ student.first_name }} {{ student.last_name }}</h3>
+        <p>
+          <strong>Email: </strong>{{ student.email }}<br>
+          <strong>Date of Birth:</strong> {{ student.date_of_birth }}<br>
+          <strong>Gender:</strong> {{ student.gender }}<br>
+          <strong>Roll:</strong> {{ student.roll }}<br>
+          <strong>Address:</strong> {{ student.address }}<br>
+          <strong>Year:</strong> {{ student.year }}<br>
+          <strong>Department:</strong> {{ student.department }}
+        </p>
+      </li>
+    {% empty %}
+      <li class="list-group-item">No students found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
