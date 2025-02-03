@@ -1,41 +1,83 @@
 {% extends 'base.html' %}
-
 {% load static %}  <!-- Load static tag library -->
 
 {% block content %}
-  <h1 class="text-center mt-3">Search Student</h1>
-  <form method="get" class="form-inline justify-content-center mt-3">
-    <input type="text" name="query" placeholder="Search by name or email" class="form-control mr-2">
-    <button type="submit" class="btn btn-primary">Search</button>
-  </form>
-  <ul class="list-group mt-3">
-    {% for student in students %}
-      <li class="list-group-item">
-        <!-- Display Profile Image -->
-        {% if student.image %}
-          <div class="text-center mb-3">
-            <img src="{{ student.image.url }}" alt="{{ student.first_name }} {{ student.last_name }}'s Profile" class="img-fluid rounded-circle" width="150">
-          </div>
-        {% else %}
-          <div class="text-center mb-3">
-            <img src="{% static 'default-profile.png' %}" alt="Default Profile" class="img-fluid rounded-circle" width="150">
-          </div>
-        {% endif %}
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0f2f5, #d9e2ec);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .search-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        <!-- Student Information -->
-        <h3>{{ student.first_name }} {{ student.last_name }}</h3>
-        <p>
-          <strong>Email: </strong>{{ student.email }}<br>
-          <strong>Date of Birth:</strong> {{ student.date_of_birth }}<br>
-          <strong>Gender:</strong> {{ student.gender }}<br>
-          <strong>Roll:</strong> {{ student.roll }}<br>
-          <strong>Address:</strong> {{ student.address }}<br>
-          <strong>Year:</strong> {{ student.year }}<br>
-          <strong>Department:</strong> {{ student.department }}
-        </p>
-      </li>
-    {% empty %}
-      <li class="list-group-item">No students found.</li>
-    {% endfor %}
-  </ul>
+    .student-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .student-card img {
+      border: 3px solid #007bff;
+      padding: 5px;
+      background: white;
+    }
+  </style>
+
+  <div class="container mt-5">
+    <div class="text-center">
+      <h1 class="mb-4 text-primary">Search Student</h1>
+
+      <!-- Register Button -->
+      <a href="{% url 'register_student' %}" class="btn btn-success mb-3">Add Student</a>
+    </div>
+
+    <!-- Search Form -->
+    <div class="search-container">
+      <form method="get" class="form-inline justify-content-center">
+        <input type="text" name="query" placeholder="Search by name or email" class="form-control mr-2" style="width: 300px;">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+
+    <!-- Student List -->
+    <div class="mt-4">
+      {% for student in students %}
+        <div class="student-card">
+          <!-- Display Profile Image -->
+          {% if student.image %}
+            <img src="{{ student.image.url }}" alt="{{ student.first_name }} {{ student.last_name }}" class="img-fluid rounded-circle" width="120">
+          {% else %}
+            <img src="{% static 'default-profile.png' %}" alt="Default Profile" class="img-fluid rounded-circle" width="120">
+          {% endif %}
+
+          <!-- Student Information -->
+          <h3 class="mt-3">{{ student.first_name }} {{ student.last_name }}</h3>
+          <p>
+            <strong>Email:</strong> {{ student.email }}<br>
+            <strong>Date of Birth:</strong> {{ student.date_of_birth }}<br>
+            <strong>Gender:</strong> {{ student.gender }}<br>
+            <strong>Roll:</strong> {{ student.roll }}<br>
+            <strong>Address:</strong> {{ student.address }}<br>
+            <strong>Year:</strong> {{ student.year }}<br>
+            <strong>Department:</strong> {{ student.department }}
+          </p>
+        </div>
+      {% empty %}
+        <div class="text-center mt-4">
+          <p class="text-muted">No students found.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}

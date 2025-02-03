@@ -8,14 +8,22 @@ from django.contrib import messages
 from .forms import StudentForm
 from .models import Student
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import StudentForm
+from .models import Student
+
 def register_student(request):
     if request.method == 'POST':
         form = StudentForm(request.POST, request.FILES)
         if form.is_valid():
-            student = form.save()
-            print("Saved Image Path:", student.image.path)  # Debugging
+            student = form.save(commit=False)
+            if 'image' in request.FILES:  # Ensure an image is uploaded
+                student.image = request.FILES['image']
+            student.save()
+
             messages.success(request, 'Student registered successfully!')
-            return redirect('register_student')
+            return redirect('register_student')  # Redirect to clear form data
         else:
             messages.error(request, 'Error in form submission.')
             print("Form errors:", form.errors)  # Debugging
