@@ -1,20 +1,21 @@
 from pathlib import Path
 import os
 import dj_database_url
-
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# SECURITY WARNING: Keep the secret key secret in production!
+SECRET_KEY = config('SECRET_KEY', default='your-default-secret-key')
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: Don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+# Define allowed hosts for production
+ALLOWED_HOSTS = ['*']  # Change this to your domain in production
 
+# Media files (user uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -26,13 +27,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myapp',
-    'whitenoise',  # Add whitenoise for static file handling
+    'myapp',  # Replace with your app name
+    'whitenoise.runserver_nostatic',  # Ensures Whitenoise works properly in dev & prod
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add Whitenoise Middleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Enable Whitenoise for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,27 +62,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sms.wsgi.application'
 
-# Database
-# Use dj_database_url to parse the DATABASE_URL from Heroku
+# ✅ Database Configuration (PostgreSQL for production, SQLite for local development)
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': dj_database_url.config(default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'))
 }
-
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Internationalization
@@ -90,16 +81,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# ✅ Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-
-# Heroku needs this to find the correct folder for static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# ✅ Enable Whitenoise for serving static files in production
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Default primary key field type
+# ✅ Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-
