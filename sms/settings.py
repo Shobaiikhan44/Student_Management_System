@@ -64,8 +64,16 @@ WSGI_APPLICATION = 'sms.wsgi.application'
 
 # ✅ Database Configuration (PostgreSQL for production, SQLite for local development)
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+    }
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
